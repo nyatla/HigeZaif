@@ -68,10 +68,10 @@ FpsCtrl.prototype={
 		var tags=this._tags;
 		animation_reset_timer && clearTimeout(animation_reset_timer);
 		for (var b = 0; 10 > b; b++){
-			tags.ask[b].price.innerHTML = "&nbsp;";
-			tags.ask[b].amount.innerHTML = "&nbsp;";
-			tags.bid[b].price.innerHTML = "&nbsp;";
-			tags.bid[b].amount.innerHTML = "&nbsp;";
+			tags.ask[b].price.html("&nbsp;");
+			tags.ask[b].amount.html("&nbsp;");
+			tags.bid[b].price.html("&nbsp;");
+			tags.bid[b].amount.html("&nbsp;");
 			tags.ask[b].total.attr("title", "").attr("data-original-title", "");
 			tags.bid[b].total.attr("title", "").attr("data-original-title", "");
 		}
@@ -89,8 +89,8 @@ FpsCtrl.prototype={
 					return !1
 				}
 			}, b = 0; e > b; b++){
-			tags.bid[b].price.textContent = c.bid_data[b].price;
-			tags.bid[b].amount.textContent = c.bid_data[b].amount;
+			tags.bid[b].price.text(c.bid_data[b].price);
+			tags.bid[b].amount.text(c.bid_data[b].amount);
 			tags.bid[b].buy_line_box_bar.css("width", c.bid_data[b].amount_rate + "%");
 			tags.bid[b].total.attr("data-original-title", c.bid_data[b].total + trade.aux.toUpperCase());
 		}
@@ -98,8 +98,8 @@ FpsCtrl.prototype={
 		for (var b = 0; e > b; b++) d("bid", b, "price") ? (tags.bid[b].price.addClass("change"), tags.bid[b].root.addClass("change")) : d("bid", b, "amount") && tags.bid[b].buy_line_box_bar.addClass("change");
 		var e = Math.min(c.ask_data.length, 10);
 		for (var b = 0; e > b; b++){
-			 tags.ask[b].price.textContent = c.ask_data[b].price;
-			 tags.ask[b].amount.textContent = c.ask_data[b].amount;
+			 tags.ask[b].price.text(c.ask_data[b].price);
+			 tags.ask[b].amount.text(c.ask_data[b].amount);
 			 tags.ask[b].sell_line_box_bar.css("width", c.ask_data[b].amount_rate + "%");
 			 tags.ask[b].total.attr("data-original-title", c.ask_data[b].total + trade.aux.toUpperCase());
 		}
@@ -127,10 +127,10 @@ FpsCtrl.prototype={
 		if(updates>tags.table_log.length){
 			updates=tags.table_log.length;
 		}
-		for(var b=0;b<updates;b++){
-			var t=$(tags.table_log[b].price.parent());
-			t.stop().fadeOut(0).fadeIn(800);
-		}
+//		for(var b=0;b<updates;b++){
+//			var t=$(tags.table_log[b].price.parent());
+//			t.stop().fadeOut(0).fadeIn(800);
+//		}
 		var k = "";
 		switch (c.last_price.action) {
 			case "bid":
