@@ -1,0 +1,14 @@
+{
+     "manifest_version":2,
+     "version":"1.0",
+     "name": "Zaifpatch",
+     "content_scripts": [
+         {
+             "js": ["inject.js"], 
+             "matches": ["https://zaif.jp/trade_btc_jpy*"] 
+         }
+     ],
+	"web_accessible_resources": [
+		"zpatch.js"
+	]  
+}
