@@ -15,7 +15,7 @@ function FpsCtrl()
 	this._tags=function(c){
 		var ask=[];
 		var bid=[];
-		for(var i=0;i<10;i++){
+		for(var i=0;i<c;i++){
 			ask.push({
 				"root":$("#ask" + i),
 				"price":$("#ask_price" + i),
@@ -31,13 +31,29 @@ function FpsCtrl()
 				"buy_line_box_bar":$("#bid" + i + " .buy_line_box .bar")
 				});
 		}
+		//取引履歴のログ
+		var tlog=[];
+		var tds=$("#table-log tbody tr td");
+		for(var i=0;i<tds.length;i+=3){
+			tlog.push({"time":$(tds[i+0]),"price":$(tds[i+1]),"amount":$(tds[i+2])});
+		}
 		return{
 			"ask":ask,
 			"bid":bid,
+			"table_log":tlog
 		}
 	}(10);
+	this._g_log=function(c){
+		var r=[];
+		for(var i=0;i<c.length;i++){
+			r.push({"timestamp":c[i].time.text(),"colored_price":c[i].price.html(),"amount":c[i].amount.text(),"_id":0});
+		}
+		return r;
+	}(this._tags.table_log);
+	$(".note").append("<div class=\"note-wrapper\" style=\"color:red\">&#9889;表示高速化パッチが有効です。</div>")
 }
 FpsCtrl.prototype={
+	_g_log:[],
 	_buffer: null,
 	_timer: null,
 	_tags:null,
@@ -90,19 +106,30 @@ FpsCtrl.prototype={
 		for (var b = 0; e > b; b++){
 			d("ask", b, "price") ? (tags.ask[b].price.addClass("change"), tags.ask[b].root.addClass("change")) : d("ask", b, "amount") && tags.ask[b].sell_line_box_bar.addClass("change");
 		}
-		for (var f = $(".log_row").map(function() {
-				return $(this).data("id")
-			}), g = [], b = 0; b < c.log_data.length; b++) {
+		for (var b = c.log_data.length-1; b >=0 ; b--) {
 			var h = c.log_data[b];
-			if (-1 !== $.inArray(h._id, f)) break;
-			g.push(h)
+			if(this._g_log[0]._id<h._id){
+				this._g_log.unshift(h);
+			}
 		}
-		for (var i = $("#table-log tbody"), b = g.length - 1; b >= 0; b--) {
-			var h = g[b];
-			var j = $('<tr class="log_row enter"></tr>').append($('<td class="text-right"/>').text(h.timestamp)).append($('<td class="text-right"/>').html(h.colored_price)).append($('<td class="text-right"/>').text(h.amount));
-			j.attr("data-id", h._id);
-			i.children().last().remove();
-			i.prepend(j);
+		var updates=0;
+		while(this._g_log.length>tags.table_log.length){
+			updates++;
+			this._g_log.pop();
+		}
+		if(updates>0){
+			for(var b=0;b<this._g_log.length;b++){
+				tags.table_log[b].time.text(this._g_log[b].timestamp);
+				tags.table_log[b].price.html(this._g_log[b].colored_price);
+				tags.table_log[b].amount.text(this._g_log[b].amount);
+			}
+		}
+		if(updates>tags.table_log.length){
+			updates=tags.table_log.length;
+		}
+		for(var b=0;b<updates;b++){
+			var t=$(tags.table_log[b].price.parent());
+			t.stop().fadeOut(0).fadeIn(800);
 		}
 		var k = "";
 		switch (c.last_price.action) {
