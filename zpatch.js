@@ -12,11 +12,35 @@ setTimeout(zp_waitfor(),3000);
 
 function FpsCtrl()
 {
-	alert("");
+	this._tags=function(c){
+		var ask=[];
+		var bid=[];
+		for(var i=0;i<10;i++){
+			ask.push({
+				"root":$("#ask" + i),
+				"price":$("#ask_price" + i),
+				"amount":$("#ask_amount" + i),
+				"total":$("#ask_total" + i),
+				"sell_line_box_bar":$("#ask" + i + " .sell_line_box .bar")
+			});
+			bid.push({
+				"root":$("#bid" + i),
+				"price":$("#bid_price" + i),
+				"amount":$("#bid_amount" + i),
+				"total":$("#bid_total" + i),
+				"buy_line_box_bar":$("#bid" + i + " .buy_line_box .bar")
+				});
+		}
+		return{
+			"ask":ask,
+			"bid":bid,
+		}
+	}(10);
 }
 FpsCtrl.prototype={
 	_buffer: null,
 	_timer: null,
+	_tags:null,
 	update: function(a) {
 		this._buffer = a, LIMIT_FPS && null != this._timer || this.render()
 	},
@@ -25,21 +49,47 @@ FpsCtrl.prototype={
 	},
 	draw: function(a)
 	{
+		var tags=this._tags;
 		animation_reset_timer && clearTimeout(animation_reset_timer);
-		for (var b = 0; 10 > b; b++) document.getElementById("ask_price" + b).innerHTML = "&nbsp;", document.getElementById("ask_amount" + b).innerHTML = "&nbsp;", document.getElementById("bid_price" + b).innerHTML = "&nbsp;", document.getElementById("bid_amount" + b).innerHTML = "&nbsp;", $("#ask_total" + b).attr("title", "").attr("data-original-title", ""), $("#bid_total" + b).attr("title", "").attr("data-original-title", "");
-		$(".sell_line_box .bar").css("width", "0%"), $(".buy_line_box .bar").css("width", "0%"), $(".change").removeClass("change");
-		for (var c = JSON.parse(a.data), d = function(a, b, d) {
-				if (!trade.last_board) return !1;
+		for (var b = 0; 10 > b; b++){
+			tags.ask[b].price.innerHTML = "&nbsp;";
+			tags.ask[b].amount.innerHTML = "&nbsp;";
+			tags.bid[b].price.innerHTML = "&nbsp;";
+			tags.bid[b].amount.innerHTML = "&nbsp;";
+			tags.ask[b].total.attr("title", "").attr("data-original-title", "");
+			tags.bid[b].total.attr("title", "").attr("data-original-title", "");
+		}
+		$(".sell_line_box .bar").css("width", "0%");
+		$(".buy_line_box .bar").css("width", "0%");
+		$(".change").removeClass("change");
+
+		var c = JSON.parse(a.data);
+		var e = Math.min(c.bid_data.length, 10);
+		for (var d = function(a, b, d) {
+			if (!trade.last_board) return !1;
 				try {
 					return data1 = "bid" == a ? c.bid_data : c.ask_data, data2 = "bid" == a ? trade.last_board.bid_data : trade.last_board.ask_data, data1[b][d] != data2[b][d]
 				} catch (e) {
 					return !1
 				}
-			}, e = Math.min(c.bid_data.length, 10), b = 0; e > b; b++) document.getElementById("bid_price" + b).textContent = c.bid_data[b].price, document.getElementById("bid_amount" + b).textContent = c.bid_data[b].amount, $("#bid" + b + " .buy_line_box .bar").css("width", c.bid_data[b].amount_rate + "%"), $("#bid_total" + b).attr("data-original-title", c.bid_data[b].total + trade.aux.toUpperCase());
-		for (var b = 0; e > b; b++) d("bid", b, "price") ? ($("#bid_price" + b).addClass("change"), $("#bid" + b).addClass("change")) : d("bid", b, "amount") && $("#bid" + b + " .buy_line_box .bar").addClass("change");
-		e = Math.min(c.ask_data.length, 10);
-		for (var b = 0; e > b; b++) document.getElementById("ask_price" + b).textContent = c.ask_data[b].price, document.getElementById("ask_amount" + b).textContent = c.ask_data[b].amount, $("#ask" + b + " .sell_line_box .bar").css("width", c.ask_data[b].amount_rate + "%"), $("#ask_total" + b).attr("data-original-title", c.ask_data[b].total + trade.aux.toUpperCase());
-		for (var b = 0; e > b; b++) d("ask", b, "price") ? ($("#ask_price" + b).addClass("change"), $("#ask" + b).addClass("change")) : d("ask", b, "amount") && $("#ask" + b + " .sell_line_box .bar").addClass("change");
+			}, b = 0; e > b; b++){
+			tags.bid[b].price.textContent = c.bid_data[b].price;
+			tags.bid[b].amount.textContent = c.bid_data[b].amount;
+			tags.bid[b].buy_line_box_bar.css("width", c.bid_data[b].amount_rate + "%");
+			tags.bid[b].total.attr("data-original-title", c.bid_data[b].total + trade.aux.toUpperCase());
+		}
+
+		for (var b = 0; e > b; b++) d("bid", b, "price") ? (tags.bid[b].price.addClass("change"), tags.bid[b].root.addClass("change")) : d("bid", b, "amount") && tags.bid[b].buy_line_box_bar.addClass("change");
+		var e = Math.min(c.ask_data.length, 10);
+		for (var b = 0; e > b; b++){
+			 tags.ask[b].price.textContent = c.ask_data[b].price;
+			 tags.ask[b].amount.textContent = c.ask_data[b].amount;
+			 tags.ask[b].sell_line_box_bar.css("width", c.ask_data[b].amount_rate + "%");
+			 tags.ask[b].total.attr("data-original-title", c.ask_data[b].total + trade.aux.toUpperCase());
+		}
+		for (var b = 0; e > b; b++){
+			d("ask", b, "price") ? (tags.ask[b].price.addClass("change"), tags.ask[b].root.addClass("change")) : d("ask", b, "amount") && tags.ask[b].sell_line_box_bar.addClass("change");
+		}
 		for (var f = $(".log_row").map(function() {
 				return $(this).data("id")
 			}), g = [], b = 0; b < c.log_data.length; b++) {
@@ -48,9 +98,11 @@ FpsCtrl.prototype={
 			g.push(h)
 		}
 		for (var i = $("#table-log tbody"), b = g.length - 1; b >= 0; b--) {
-			var h = g[b],
-				j = $('<tr class="log_row enter"></tr>').append($('<td class="text-right"/>').text(h.timestamp)).append($('<td class="text-right"/>').html(h.colored_price)).append($('<td class="text-right"/>').text(h.amount));
-			j.attr("data-id", h._id), i.children().last().remove(), i.prepend(j)
+			var h = g[b];
+			var j = $('<tr class="log_row enter"></tr>').append($('<td class="text-right"/>').text(h.timestamp)).append($('<td class="text-right"/>').html(h.colored_price)).append($('<td class="text-right"/>').text(h.amount));
+			j.attr("data-id", h._id);
+			i.children().last().remove();
+			i.prepend(j);
 		}
 		var k = "";
 		switch (c.last_price.action) {
