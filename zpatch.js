@@ -58,10 +58,10 @@ FpsCtrl.prototype={
 	_timer: null,
 	_tags:null,
 	update: function(a) {
-		this._buffer = a, LIMIT_FPS && null != this._timer || this.render()
+		this._buffer = a, is_limit_fps() && null != this._timer || this.render()
 	},
 	render: function() {
-		clearTimeout(this._timer), null !== this._buffer ? (this.draw(this._buffer), this._buffer = null, this._timer = setTimeout(this.render.bind(this), REFRESH_RATE_IN_MS)) : this._timer = null
+		clearTimeout(this._timer), null !== this._buffer ? (this.draw(this._buffer), this._buffer = null, this._timer = setTimeout(this.render.bind(this), get_refresh_rate_in_ms())) : this._timer = null
 	},
 	draw: function(a)
 	{
