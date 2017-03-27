@@ -36,7 +36,8 @@ function send_patch(a) {
 var _x_time_id=null;
 function showtime(f)
 {
-	var html="<iframe id=\"hige\" width=\"200\" height=\"113\" src=\"https://www.youtube.com/embed/3zhxCtVW8FI?rel=0&amp;controls=0&amp;showinfo=0&autoplay=1&loop=1&playlist=3zhxCtVW8FI\" frameborder=\"0\"></iframe>";
+	var content_id="3zhxCtVW8FI";
+	var html="<iframe id=\"hige\" width=\"200\" height=\"113\" src=\"https://www.youtube.com/embed/"+content_id+"?rel=0&amp;controls=0&amp;showinfo=0&autoplay=1&loop=1&playlist="+content_id+"\" frameborder=\"0\"></iframe>";
 //	var comwin=$(".commission > div:eq(0) > div:eq(0) > div:eq(1)");
 	var comwin=$("#contents");
 	if(f){
