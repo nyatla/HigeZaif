@@ -26,3 +26,4 @@ Zaifのbtc_jpyのページhttps://zaif.jp/trade_btc_jpy を開いて、ページ
 1. ZaifのWeb画面から注文をしたときに応答に３秒以上かかると演奏が始まります。
 2. 運よく注文が成功すると自動的に演奏は終了します。
 3. BGMにははYoutubeにある楽曲を使用しております。Youtubeが消音されていると何も起こりません。
+4. BGMを暴れん坊将軍にするときはhigezaif.jsの39行目のcontentidをFCb3tahZZv8にしてください。
