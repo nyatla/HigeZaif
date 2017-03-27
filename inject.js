@@ -9,4 +9,4 @@ injectScript = function(file, node) {
   return th.appendChild(s);
 };
 
-injectScript(chrome.extension.getURL('/zpatch.js'), 'body');
+injectScript(chrome.extension.getURL('/higezaif.js'), 'body');
